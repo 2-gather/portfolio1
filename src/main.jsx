@@ -2,15 +2,51 @@ import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArrowUpRight, ArrowRight, FileText, Layers3, Workflow, BarChart3,
-  Database, Sparkles, Menu, X, ChevronLeft, Download, ExternalLink, Mail,
-  Code2, Target, CheckCircle2, CircleDot, GraduationCap, Search, ChartNoAxesCombined
+  Database, Sparkles, Menu, X, ChevronLeft, Download, ExternalLink,
+  Code2, Target, CheckCircle2, GraduationCap, ChartNoAxesCombined
 } from 'lucide-react';
 import './styles.css';
 
+const profile = {
+  name: '朱海洋',
+  role: 'AI PRODUCT MANAGER',
+  email: 't2gather@outlook.com',
+  resume: '#',
+  analysis: 'https://github.com/2-gather/ai-data-analysis-agent',
+  city: 'Your City',
+  focus: 'AI 产品 · 业务分析 · Agent 工作流 · 数据应用',
+};
+
+const projectCodeLinks = {
+  data: 'https://github.com/2-gather/ai-data-analysis-agent',
+  volunteer: 'https://github.com/2-gather/gaokao_agent',
+};
+
+const projectDemoLinks = {
+  data: 'https://ai-data-analysis-agent-bytarnish.streamlit.app/',
+  volunteer: 'https://gaokao-agent-demo.onrender.com/',
+};
+
+const feishuLinks = {
+  analysis: 'https://my.feishu.cn/docx/ISEqd87g9oqoz0xgvWWc184Pn9e?from=from_copylink',
+  prd: 'https://my.feishu.cn/docx/WCDud4dZHoHBS7x7sr3c5FvGnqh?from=from_copylink',
+  architecture: 'https://my.feishu.cn/docx/Ati4dXyVQojlMzxv1B5cscUOnWc?from=from_copylink',
+};
+
+const volunteerFeishuLinks = {
+  analysis: 'https://my.feishu.cn/docx/RhQLd5FTFoP3uwxYFcXcDB7inTf?from=from_copylink',
+  prd: 'https://my.feishu.cn/docx/U2VCdq4iLoYO9xxRFryczAVanbc?from=from_copylink',
+  architecture: 'https://my.feishu.cn/docx/Ss7sdNsgZoMFUyxHoXzcYIwvn1g?from=from_copylink',
+};
+
+const datasetLinks = {
+  data: `${import.meta.env.BASE_URL}datasets/analyzer_agent_test_data.xlsx`,
+  records: `${import.meta.env.BASE_URL}datasets/test_execution_records.xlsx`,
+};
+
 const docs = {
   analysis: {
-    title: '产品分析报告',
-    eyebrow: 'PRODUCT ANALYSIS',
+    title: '产品分析报告', eyebrow: 'PRODUCT ANALYSIS',
     subtitle: '从业务问题出发，明确目标用户、核心痛点与产品机会。',
     sections: [
       ['01 项目背景与市场机会', '业务人员日常需要处理大量表格，但从数据整理到形成业务结论仍有较高的操作和认知成本。项目尝试通过自然语言交互降低基础数据分析门槛。'],
@@ -22,8 +58,7 @@ const docs = {
     ]
   },
   prd: {
-    title: 'PRD 产品需求文档',
-    eyebrow: 'PRODUCT REQUIREMENTS',
+    title: 'PRD 产品需求文档', eyebrow: 'PRODUCT REQUIREMENTS',
     subtitle: '定义 MVP 的用户流程、功能范围、业务规则与验收要求。',
     sections: [
       ['01 产品目标', '帮助非数据专业用户完成基础数据探索与常见分析任务，减少从提出问题到获取初步数据结论的操作步骤。'],
@@ -35,8 +70,7 @@ const docs = {
     ]
   },
   architecture: {
-    title: '方案设计与技术架构',
-    eyebrow: 'SOLUTION & ARCHITECTURE',
+    title: '方案设计与技术架构', eyebrow: 'SOLUTION & ARCHITECTURE',
     subtitle: '展示应用分层、Agent 工作流以及模型与数据工具的职责边界。',
     sections: [
       ['01 整体架构', 'Streamlit 负责用户交互与结果呈现；Agent / LangGraph 组织任务规划和执行流程；DeepSeek 提供自然语言理解与回答组织能力；数据分析工具调用 Pandas 完成确定性计算。'],
@@ -48,20 +82,18 @@ const docs = {
     ]
   },
   testing: {
-    title: '测试集与执行记录 V1.0',
-    eyebrow: 'TESTING',
-    subtitle: '记录测试范围、执行结果与问题发现。此页面为展示摘要，详细数据可后续接入真实 Excel。',
+    title: '测试集与执行记录 V1.0', eyebrow: 'TESTING',
+    subtitle: '测试范围、问题发现与执行记录摘要。',
     sections: [
       ['01 测试范围', '覆盖文件上传、数据概览、基础统计、分组聚合、类别排名、异常输入与复杂问题等场景。'],
       ['02 执行原则', '按实际运行结果填写执行记录；区分通过、失败、部分通过和未执行。执行覆盖率不等于结果准确率。'],
-      ['03 重点发现', '测试中发现，部分自然语言问题可能被映射到错误的分析维度；部分复杂任务未能完整返回所需结果。此类问题应作为当前版本局限如实记录。'],
+      ['03 重点发现', '部分自然语言问题可能被映射到错误的分析维度；部分复杂任务未能完整返回所需结果。此类问题应作为当前版本局限如实记录。'],
       ['04 后续改进方向', '核对每条用例的问题、实际调用工具、参数和输出；统一通过标准；复核汇总数量；优先修复分析意图与工具参数不匹配的问题。'],
-      ['05 附件说明', '请将已完成的真实测试 Excel 放在项目文件中，或在部署后配置下载链接。当前模板没有伪造测试通过率，也没有内置虚构的测试数据。']
+      ['05 附件说明', '可下载真实测试 Excel，查看详细测试用例、执行记录和结果汇总。']
     ]
   },
   volunteer: {
-    title: 'AI 志愿规划助手',
-    eyebrow: 'PROJECT 01',
+    title: 'AI 志愿规划助手', eyebrow: 'PROJECT 01',
     subtitle: '基于 Dify Workflow 与知识库的高考志愿规划辅助产品。',
     sections: [
       ['01 项目目标', '帮助考生结合分数、选科、意向城市和专业等条件，快速获得有依据的院校与专业参考信息。'],
@@ -72,266 +104,256 @@ const docs = {
   }
 };
 
+function openExternal(url) {
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
 function App() {
   const [page, setPage] = useState({ type: 'home' });
   const [mobileOpen, setMobileOpen] = useState(false);
-
   const go = (next) => {
     setPage(next);
     setMobileOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const openDoc = (key) => go({ type: 'doc', key });
+  const openDoc = (key, project = page.key || 'data') => go({ type: 'doc', key, project });
   const openProject = (key) => go({ type: 'project', key });
-
   const activeDoc = page.type === 'doc' ? docs[page.key] : null;
   const isHome = page.type === 'home';
 
-  return (
-    <div className="app-shell">
-      <header className="topbar">
-        <button className="brand" onClick={() => go({ type: 'home'})} aria-label="返回首页">
-          <span className="brand-mark"><Sparkles size={18} /></span>
-          <span>AI PRODUCT <b>PORTFOLIO</b></span>
-        </button>
-        <nav className={mobileOpen ? 'nav nav-open' : 'nav'}>
-          <button className={isHome ? 'nav-link active' : 'nav-link'} onClick={() => go({type:'home'})}>首页</button>
-          <button className="nav-link" onClick={() => openProject('data')}>项目案例</button>
-          <button className="nav-link" onClick={() => go({type:'about'})}>关于我</button>
-          <a className="nav-cta" href="mailto:your-email@example.com">联系我 <ArrowUpRight size={15}/></a>
-        </nav>
-        <button className="mobile-menu" onClick={() => setMobileOpen(!mobileOpen)} aria-label="打开菜单">
-          {mobileOpen ? <X size={20}/> : <Menu size={20}/>}
-        </button>
-      </header>
+  return <div className="app-shell">
+    <header className="topbar">
+      <button className="brand" onClick={() => go({ type: 'home' })} aria-label="返回首页">
+        <span className="brand-mark"><Sparkles size={18} /></span>
+        <span>{profile.name || 'AI PRODUCT'} <b>{profile.role || 'PORTFOLIO'}</b></span>
+      </button>
+      <nav className={mobileOpen ? 'nav nav-open' : 'nav'}>
+        <button className={isHome ? 'nav-link active' : 'nav-link'} onClick={() => go({ type: 'home' })}>首页</button>
+        <button className="nav-link" onClick={() => openProject('data')}>项目案例</button>
+        <button className="nav-link" onClick={() => go({ type: 'about' })}>关于我</button>
+        <a className="nav-cta" href={`mailto:${profile.email}`}>联系我 <ArrowUpRight size={15} /></a>
+      </nav>
+      <button className="mobile-menu" onClick={() => setMobileOpen(!mobileOpen)} aria-label="打开菜单">{mobileOpen ? <X size={20} /> : <Menu size={20} />}</button>
+    </header>
 
-      {page.type === 'home' && <Home openProject={openProject} openDoc={openDoc} go={go} />}
-      {page.type === 'project' && <ProjectDetail projectKey={page.key} openDoc={openDoc} go={go} />}
-      {page.type === 'doc' && <DocumentPage doc={activeDoc} go={go} />}
-      {page.type === 'about' && <About go={go} />}
+    {page.type === 'home' && <Home openProject={openProject} openDoc={openDoc} go={go} />}
+    {page.type === 'project' && <ProjectDetail projectKey={page.key} openDoc={openDoc} go={go} />}
+    {page.type === 'doc' && <DocumentPage doc={activeDoc} docKey={page.key} projectKey={page.project || 'data'} go={go} />}
+    {page.type === 'about' && <About go={go} />}
 
-      <footer className="footer">
-        <div className="footer-brand"><span className="brand-mark small"><Sparkles size={14}/></span> AI PRODUCT PORTFOLIO</div>
-        <span>用产品思维探索 AI 的实际价值。</span>
-        <span>© 2026 · Portfolio</span>
-      </footer>
-    </div>
-  );
+    <footer className="footer">
+      <div className="footer-brand"><span className="brand-mark small"><Sparkles size={14} /></span> {profile.role || 'AI PRODUCT PORTFOLIO'}</div>
+      <span>用产品思维探索 AI 的实际价值。</span><span>© 2026 · Portfolio</span>
+    </footer>
+  </div>;
 }
 
 function Home({ openProject, openDoc, go }) {
+  const thinkingSteps = [
+    { num: '01', title: '理解问题', text: '识别真实用户痛点、使用场景和关键限制，确保方案服务于业务问题。', icon: <Target size={18} /> },
+    { num: '02', title: '设计方案', text: '梳理用户流程、功能边界和 AI 工作流，清晰界定模型、工具和职责。', icon: <Layers3 size={18} /> },
+    { num: '03', title: '搭建验证', text: '用 MVP 和测试用例快速验证方案，可执行地评估 AI 能力的真实效果。', icon: <Workflow size={18} /> },
+    { num: '04', title: '复盘迭代', text: '如实记录能力边界与失败案例，根据结果持续优化方案和产品价值。', icon: <ChartNoAxesCombined size={18} /> }
+  ];
+
   return <main>
     <section className="hero section-wrap">
       <div className="hero-copy">
         <div className="eyebrow"><span className="eyebrow-dot"></span> PRODUCT THINKING × AI PRACTICE</div>
-        <h1>把 AI 能力，<br/><span>转化为真实的产品价值。</span></h1>
-        <p className="hero-lead">关注用户问题、产品方案与 AI 工作流。通过可运行的项目实践，探索如何让 AI 更好地服务真实需求。</p>
-        <div className="hero-actions">
-          <button className="button button-primary" onClick={() => openProject('data')}>查看项目案例 <ArrowRight size={17}/></button>
-          <button className="button button-quiet" onClick={() => go({type:'about'})}>了解我 <ArrowUpRight size={16}/></button>
-        </div>
-        <div className="hero-meta">
-          <span><span className="status-dot"></span> AI 产品实践</span>
-          <span>产品分析 · Agent · 数据应用</span>
+        <h1>把 AI 能力，<br /><span>转化为真实的产品价值。</span></h1>
+        <p className="hero-lead">我关注 AI 技术如何转化为实际的产品价值，善于从用户需求出发，梳理业务问题、设计产品方案、搭建 MVP，并通过实际测试与持续迭代，验证 AI 能力在真实场景中的应用效果。</p>
+        <div className="metrics-strip">
+          <div className="metric-box">
+            <div className="metric-head">
+              <span className="metric-icon blue"><Sparkles size={15} /></span>
+              <span className="metric-kicker">PROJECTS</span>
+            </div>
+            <b>完整的<br/>产品项目</b>
+            <small>覆盖产品分析、Agent 工作流与数据应用等 AI 产品实践项目。</small>
+          </div>
+          <div className="metric-box">
+            <div className="metric-head">
+              <span className="metric-icon purple"><Layers3 size={15} /></span>
+              <span className="metric-kicker">MVP</span>
+            </div>
+            <b>从需求<br/>到验证</b>
+            <small>从问题定义、方案设计到快速落地，聚焦真实业务场景的 MVP 迭代。</small>
+          </div>
+          <div className="metric-box">
+            <div className="metric-head">
+              <span className="metric-icon green"><Target size={15} /></span>
+              <span className="metric-kicker">PM</span>
+            </div>
+            <b>产品思维方案落地</b>
+            <small>兼顾用户价值、业务逻辑和 AI 能力边界，推动方案可执行与可验证。</small>
+          </div>
         </div>
       </div>
-      <div className="hero-visual" aria-label="AI 数据分析概念图">
-        <div className="visual-orbit orbit-one"></div><div className="visual-orbit orbit-two"></div>
-        <div className="visual-card card-top"><span className="mini-icon blue"><ChartNoAxesCombined size={17}/></span><div><b>Business Question</b><small>自然语言理解</small></div><span className="tiny-check"><CheckCircle2 size={16}/></span></div>
-        <div className="visual-core"><div className="core-glow"></div><Sparkles size={34}/><span>AI</span></div>
-        <div className="visual-card card-bottom"><span className="mini-icon purple"><Workflow size={17}/></span><div><b>Agent Workflow</b><small>规划 · 工具调用 · 结果</small></div><span className="tiny-check"><CheckCircle2 size={16}/></span></div>
-        <div className="float-tag tag-one">LLM</div><div className="float-tag tag-two">Pandas</div><div className="float-tag tag-three">RAG</div>
-      </div>
-    </section>
 
-    <section className="stats-strip">
-      <div className="stats-inner">
-        <div><strong>02</strong><span>AI 产品项目</span></div>
-        <div><strong>01</strong><span>数据分析 Agent</span></div>
-        <div><strong>01</strong><span>知识库应用</span></div>
-        <div><strong>PM × AI</strong><span>关注方向</span></div>
+      <div className="hero-visual-shell">
+        <aside className="strategy-panel wide-panel" aria-label="我的产品实践方式">
+          <div className="strategy-panel-head">
+            <div className="eyebrow">HOW I THINK</div>
+            <h3>我的产品实践方式</h3>
+          </div>
+          <div className="strategy-list">
+            {thinkingSteps.map((step) => (
+              <div className="strategy-step" key={step.num}>
+                <div className="strategy-step-icon">{step.icon}</div>
+                <div className="strategy-step-copy">
+                  <div className="strategy-step-topline">
+                    <span className="strategy-step-num">{step.num}</span>
+                    <h4>{step.title}</h4>
+                  </div>
+                  <p>{step.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
+
+        <div className="hero-side-actions" aria-label="快捷入口">
+          <button className="button button-primary" onClick={() => openProject('data')}>查看项目案例 <ArrowRight size={17} /></button>
+          <button className="button button-quiet" onClick={() => go({ type: 'about' })}>了解我 <ArrowUpRight size={16} /></button>
+        </div>
       </div>
     </section>
 
     <section className="section-wrap section-block">
-      <div className="section-heading">
-        <div><div className="eyebrow">SELECTED WORK</div><h2>项目案例<span className="heading-period">.</span></h2></div>
-        <p>从需求洞察到方案设计，展示 AI 产品实践中的关键决策与思考。</p>
-      </div>
+      <div className="section-heading"><div><div className="eyebrow">SELECTED WORK</div><h2>项目案例<span className="heading-period">.</span></h2></div><p>从需求洞察到方案设计，展示 AI 产品实践中的关键决策与思考。</p></div>
       <div className="project-grid">
         <article className="project-card featured">
-          <div className="project-art data-art">
-            <div className="art-label"><span className="art-dot"></span> FEATURED PROJECT</div>
-            <div className="dashboard-preview">
-              <div className="preview-top"><span></span><span></span><span></span><i>DATA OVERVIEW</i></div>
-              <div className="preview-metrics"><div><small>Rows</small><b>1,248</b></div><div><small>Fields</small><b>07</b></div><div><small>Missing</small><b>02</b></div></div>
-              <div className="preview-chart"><div className="chart-bars"><i/><i/><i/><i/><i/><i/><i/></div><div className="chart-line"></div></div>
-            </div>
-            <span className="art-orb orb-a"></span><span className="art-orb orb-b"></span>
-          </div>
-          <div className="project-content">
-            <div className="project-meta"><span>PROJECT 02</span><span className="meta-divider">/</span><span>AI AGENT</span></div>
-            <h3>AI 数据分析 Agent</h3>
-            <p>让业务用户用自然语言完成基础数据探索、统计、分组聚合与类别排名。</p>
-            <div className="tag-list"><span>Python</span><span>Streamlit</span><span>LangGraph</span><span>DeepSeek</span></div>
-            <div className="project-card-footer"><button className="text-link" onClick={() => openProject('data')}>查看项目详情 <ArrowRight size={16}/></button><span className="project-status"><span className="status-dot"></span> MVP V1.0</span></div>
+          <div className="project-art data-art"><div className="art-label"><span className="art-dot"></span> FEATURED PROJECT</div><div className="dashboard-preview">
+            <div className="preview-top"><span></span><span></span><span></span><i>DATA OVERVIEW</i></div>
+            <div className="preview-metrics"><div><small>Rows</small><b>1,248</b></div><div><small>Fields</small><b>07</b></div><div><small>Missing</small><b>02</b></div></div>
+            <div className="preview-chart"><div className="chart-bars"><i /><i /><i /><i /><i /><i /><i /></div><div className="chart-line"></div></div>
+          </div><span className="art-orb orb-a"></span><span className="art-orb orb-b"></span></div>
+          <div className="project-content"><div className="project-meta"><span>PROJECT 02</span><span className="meta-divider">/</span><span>AI AGENT</span></div><h3>AI 数据分析 Agent</h3>
+            <p>让业务用户用自然语言完成基础数据探索、统计、分组聚合与类别排名。</p><div className="tag-list"><span>Python</span><span>Streamlit</span><span>LangGraph</span><span>DeepSeek</span></div>
+            <div className="project-card-footer"><button className="text-link" onClick={() => openProject('data')}>查看项目详情 <ArrowRight size={16} /></button><span className="project-status"><span className="status-dot"></span> MVP V1.0</span></div>
           </div>
         </article>
         <article className="project-card">
-          <div className="project-art volunteer-art">
-            <div className="art-label"><span className="art-dot"></span> WORKFLOW PROJECT</div>
-            <div className="admission-sheet">
-              <div className="sheet-head"><GraduationCap size={21}/><span>志愿规划助手</span></div>
-              <div className="sheet-sub">根据个人条件，探索适合的选择</div>
-              <div className="sheet-row"><span>院校匹配</span><div className="sheet-bar"><i style={{width:'84%'}}/></div><b>84</b></div>
-              <div className="sheet-row"><span>专业方向</span><div className="sheet-bar"><i style={{width:'69%'}}/></div><b>69</b></div>
-              <div className="sheet-row"><span>城市偏好</span><div className="sheet-bar"><i style={{width:'76%'}}/></div><b>76</b></div>
-              <div className="sheet-foot"><Sparkles size={14}/> 基于条件与知识库提供参考</div>
-            </div>
-            <span className="vol-orb"></span>
-          </div>
-          <div className="project-content">
-            <div className="project-meta"><span>PROJECT 01</span><span className="meta-divider">/</span><span>KNOWLEDGE WORKFLOW</span></div>
-            <h3>AI 志愿规划助手</h3>
-            <p>基于 Dify Workflow 与知识库，辅助考生整理志愿筛选条件与院校参考信息。</p>
-            <div className="tag-list"><span>Dify</span><span>Workflow</span><span>RAG</span><span>产品设计</span></div>
-            <div className="project-card-footer"><button className="text-link" onClick={() => openProject('volunteer')}>查看项目详情 <ArrowRight size={16}/></button><span className="project-status">PROJECT 01</span></div>
+          <div className="project-art volunteer-art"><div className="art-label"><span className="art-dot"></span> WORKFLOW PROJECT</div><div className="admission-sheet">
+            <div className="sheet-head"><GraduationCap size={21} /><span>志愿规划助手</span></div><div className="sheet-sub">根据个人条件，探索适合的选择</div>
+            <div className="sheet-row"><span>院校匹配</span><div className="sheet-bar"><i style={{ width: '84%' }} /></div><b>84</b></div>
+            <div className="sheet-row"><span>专业方向</span><div className="sheet-bar"><i style={{ width: '69%' }} /></div><b>69</b></div>
+            <div className="sheet-row"><span>城市偏好</span><div className="sheet-bar"><i style={{ width: '76%' }} /></div><b>76</b></div>
+            <div className="sheet-foot"><Sparkles size={14} /> 基于条件与知识库提供参考</div>
+          </div><span className="vol-orb"></span></div>
+          <div className="project-content"><div className="project-meta"><span>PROJECT 01</span><span className="meta-divider">/</span><span>KNOWLEDGE WORKFLOW</span></div><h3>AI 志愿规划助手</h3>
+            <p>基于 Dify Workflow 与知识库，辅助考生整理志愿筛选条件与院校参考信息。</p><div className="tag-list"><span>Dify</span><span>Workflow</span><span>RAG</span><span>产品设计</span></div>
+            <div className="project-card-footer"><button className="text-link" onClick={() => openProject('volunteer')}>查看项目详情 <ArrowRight size={16} /></button><span className="project-status">PROJECT 01</span></div>
           </div>
         </article>
       </div>
     </section>
 
-    <section className="process-section">
-      <div className="section-wrap section-block">
-        <div className="section-heading">
-          <div><div className="eyebrow">HOW I THINK</div><h2>我的产品实践方式<span className="heading-period">.</span></h2></div>
-          <p>不只关注模型能做什么，更关注用户为什么需要它，以及如何验证它。</p>
-        </div>
-        <div className="process-grid">
-          <div className="process-item"><span className="process-num">01</span><Target size={22}/><h3>理解问题</h3><p>识别目标用户、使用场景与关键痛点，明确产品要解决的核心问题。</p></div>
-          <div className="process-item"><span className="process-num">02</span><Layers3 size={22}/><h3>设计方案</h3><p>梳理用户流程、功能边界与 AI 方案，明确模型和工具的职责。</p></div>
-          <div className="process-item"><span className="process-num">03</span><Workflow size={22}/><h3>搭建验证</h3><p>通过可运行的 MVP、测试用例和失败案例检验方案是否成立。</p></div>
-          <div className="process-item"><span className="process-num">04</span><ChartNoAxesCombined size={22}/><h3>复盘迭代</h3><p>如实记录能力边界，依据实际表现确定后续优化优先级。</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section className="section-wrap docs-section">
-      <div className="section-heading">
-        <div><div className="eyebrow">PROJECT DOCUMENTS</div><h2>项目文档<span className="heading-period">.</span></h2></div>
-        <p>核心内容直接在网站内阅读，无需跳转其他平台。</p>
-      </div>
-      <div className="doc-grid">
-        <DocTile icon={<FileText/>} title="产品分析报告" description="背景、用户、竞品与产品定位" onClick={() => openDoc('analysis')}/>
-        <DocTile icon={<Layers3/>} title="PRD 产品需求文档" description="MVP 范围、功能需求与验收标准" onClick={() => openDoc('prd')}/>
-        <DocTile icon={<Workflow/>} title="方案设计与技术架构" description="技术分层、Agent 工作流与边界" onClick={() => openDoc('architecture')}/>
-        <DocTile icon={<BarChart3/>} title="测试集与执行记录" description="测试范围、问题发现与评估方向" onClick={() => openDoc('testing')}/>
-      </div>
-    </section>
-
-    <section className="section-wrap closing-section">
-      <div><div className="eyebrow">LET'S CONNECT</div><h2>持续探索 AI 如何解决真实问题。</h2><p>欢迎交流 AI 产品、数据应用与产品实践。</p></div>
-      <a className="button button-primary" href="mailto:your-email@example.com">联系我 <ArrowUpRight size={16}/></a>
-    </section>
+    <section className="section-wrap closing-section"><div><div className="eyebrow">LET'S CONNECT</div><h2>持续探索 AI 如何解决真实问题。</h2><p>欢迎交流 AI 产品、数据应用与产品实践。请选择常用邮箱应用。</p></div><a className="button button-primary" href={`mailto:${profile.email}`} onClick={(e) => { e.preventDefault(); window.location.href = `mailto:${profile.email}`; }}>联系我 <ArrowUpRight size={16} /></a></section>
   </main>;
 }
 
 function DocTile({ icon, title, description, onClick }) {
-  return <button className="doc-tile" onClick={onClick}><span className="doc-icon">{icon}</span><span className="doc-tile-copy"><b>{title}</b><small>{description}</small></span><ArrowUpRight size={17} className="doc-arrow"/></button>;
+  return <button className="doc-tile" onClick={onClick}><span className="doc-icon">{icon}</span><span className="doc-tile-copy"><b>{title}</b><small>{description}</small></span><ArrowUpRight size={17} className="doc-arrow" /></button>;
 }
 
 function ProjectDetail({ projectKey, openDoc, go }) {
-  const data = projectKey === 'data' ? {
-    num:'PROJECT 02', title:'AI 数据分析 Agent', subtitle:'让业务用户通过自然语言完成基础数据分析。', status:'MVP V1.0',
-    intro:'面向产品、运营、市场及电商运营等业务用户，尝试降低基础数据分析的认知与操作门槛。用户上传 CSV / Excel 文件后，可以用自然语言提出问题，系统根据任务调用数据分析工具并返回结果。',
-    problem:['分析工具学习成本较高','业务问题不容易转化为分析步骤','计算结果需要结合业务语境理解'],
-    features:[['数据上传与概览','读取 CSV / XLSX，展示数据规模、字段信息与基础质量提示。'],['自然语言分析','用户通过日常语言提出问题，系统尝试规划任务并调用数据工具。'],['基础统计与排名','支持数值统计、分组聚合和类别排名等基础分析任务。']],
-    stack:['Python','Streamlit','LangGraph','DeepSeek','Pandas'],
-    docs:[['analysis','产品分析报告'],['prd','PRD 产品需求文档'],['architecture','方案设计与技术架构'],['testing','测试集与执行记录']]
+  const safeProjectKey = projectKey === 'volunteer' ? 'volunteer' : 'data';
+  const projectDocLinks = safeProjectKey === 'data' ? feishuLinks : volunteerFeishuLinks;
+  const sourceLink = projectCodeLinks[safeProjectKey];
+  const demoLink = projectDemoLinks[safeProjectKey];
+  const data = safeProjectKey === 'data' ? {
+    num: 'PROJECT 02', title: 'AI 数据分析 Agent', subtitle: '让业务用户通过自然语言完成基础数据分析。', status: 'MVP V1.0',
+    intro: '面向产品、运营、市场及电商运营等业务用户，尝试降低基础数据分析的认知与操作门槛。用户上传 CSV / Excel 文件后，可以用自然语言提出问题，系统根据任务调用数据分析工具并返回结果。',
+    problem: ['分析工具学习成本较高', '业务问题不容易转化为分析步骤', '计算结果需要结合业务语境理解'],
+    features: [['数据上传与概览', '读取 CSV / XLSX，展示数据规模、字段信息与基础质量提示。'], ['自然语言分析', '用户通过日常语言提出问题，系统尝试规划任务并调用数据工具。'], ['基础统计与排名', '支持数值统计、分组聚合和类别排名等基础分析任务。']],
+    stack: ['Python', 'Streamlit', 'LangGraph', 'DeepSeek', 'Pandas'],
+    docs: [['analysis', '产品分析报告'], ['prd', 'PRD 产品需求文档'], ['architecture', '方案设计与技术架构'], ['testing', '测试集与执行记录']],
+    thinking: 'AI 数据分析产品的核心价值不在于让模型直接生成分析结论，而在于通过 Agent 的任务规划与工具调用，将自然语言需求转化为可执行、可验证的数据分析过程。当前产品主要面向结构化表格的基础分析，复杂统计、因果推断及专业业务决策仍存在能力边界，AI 应定位为分析辅助工具，而非完全替代人工判断。'
   } : {
-    num:'PROJECT 01', title:'AI 志愿规划助手', subtitle:'基于 Dify Workflow 与知识库的志愿规划辅助工具。', status:'WORKFLOW DEMO',
-    intro:'围绕考生筛选院校时需要综合考虑分数、选科、意向城市与专业等条件的场景，设计一个基于知识库的志愿规划辅助流程，尝试把复杂条件转化为清晰的参考结果。',
-    problem:['院校和专业信息分散，筛选成本较高','多条件组合筛选容易遗漏限制条件','推荐结果需要说明依据，避免无依据生成'],
-    features:[['条件输入','围绕分数、选科、意向城市与专业组织输入条件。'],['知识库检索','从整理后的知识库中查找与条件相关的信息。'],['推荐结果组织','通过 Workflow 组织结果，强调条件优先与无匹配时如实说明。']],
-    stack:['Dify','Workflow','RAG','Prompt Design'],
-    docs:[['volunteer','项目方案与复盘']]
+    num: 'PROJECT 01', title: 'AI 志愿规划助手', subtitle: '基于 Dify Workflow 与知识库的志愿规划辅助工具。', status: 'WORKFLOW DEMO',
+    intro: '围绕考生筛选院校时需要综合考虑分数、选科、意向城市与专业等条件的场景，设计一个基于知识库的志愿规划辅助流程，尝试把复杂条件转化为清晰的参考结果。',
+    problem: ['院校和专业信息分散，筛选成本较高', '多条件组合筛选容易遗漏限制条件', '推荐结果需要说明依据，避免无依据生成'],
+    features: [['条件输入', '围绕分数、选科、意向城市与专业组织输入条件。'], ['知识库检索', '从整理后的知识库中查找与条件相关的信息。'], ['推荐结果组织', '通过 Workflow 组织结果，强调条件优先与无匹配时如实说明。']],
+    stack: ['Dify', 'Workflow', 'RAG', 'Prompt Design'],
+    docs: [['analysis', '产品分析报告'], ['prd', 'PRD 产品需求文档'], ['architecture', '方案设计与技术架构'], ['volunteer', '项目方案与复盘']],
+    thinking: 'AI 志愿规划助手的核心价值在于把零散的院校、专业、分数和地域信息，整理成一套可比较、可解释的推荐框架。当前方案适合帮助考生快速筛选候选范围，但仍依赖知识库质量、政策更新及时性和用户输入的准确性。它更接近“决策辅助工具”，而不是“替代官方信息核验”的最终答案。'
   };
 
-  return <main className="inner-page">
-    <div className="section-wrap">
-      <button className="back-link" onClick={() => go({type:'home'})}><ChevronLeft size={16}/> 返回作品集首页</button>
-      <div className="detail-hero">
-        <div className="eyebrow">{data.num} <span className="meta-divider">/</span> CASE STUDY</div>
-        <h1>{data.title}</h1><p>{data.subtitle}</p>
-        <div className="tag-list">{data.stack.map(s => <span key={s}>{s}</span>)}</div>
-        <span className="detail-status"><span className="status-dot"></span>{data.status}</span>
+  return <main className="inner-page"><div className="section-wrap">
+    <button className="back-link" onClick={() => go({ type: 'home' })}><ChevronLeft size={16} /> 返回作品集首页</button>
+    <div className="detail-hero">
+      <div className="detail-hero-copy">
+        <div className="eyebrow">{data.num} <span className="meta-divider">/</span> CASE STUDY</div><h1>{data.title}</h1><p>{data.subtitle}</p><div className="tag-list">{data.stack.map(s => <span key={s}>{s}</span>)}</div><span className="detail-status"><span className="status-dot"></span>{data.status}</span>
       </div>
-      <div className="detail-layout">
-        <article className="detail-main">
-          <section className="content-section"><div className="eyebrow">OVERVIEW</div><h2>项目概述</h2><p>{data.intro}</p></section>
-          <section className="content-section"><div className="eyebrow">USER PROBLEM</div><h2>核心问题</h2><div className="problem-list">{data.problem.map((p,i)=><div className="problem-row" key={p}><span>0{i+1}</span><p>{p}</p></div>)}</div></section>
-          <section className="content-section"><div className="eyebrow">KEY FEATURES</div><h2>核心功能</h2><div className="feature-list">{data.features.map(([title,desc],i)=><div className="feature-row" key={title}><span className="feature-index">0{i+1}</span><div><h3>{title}</h3><p>{desc}</p></div></div>)}</div></section>
-          <section className="content-section"><div className="eyebrow">LEARNINGS</div><h2>项目思考与边界</h2><p>当前项目以 MVP 验证为目标。展示时应区分已实现功能、测试中发现的问题与后续规划，不将计划中的能力描述为现有能力。</p></section>
-        </article>
-        <aside className="detail-aside">
-          <div className="aside-card"><h3>项目材料</h3><p>在当前网站中直接阅读</p>
-{data.docs.map(([key, label]) => (
-  <button
-    className="aside-doc"
-    key={key}
-    onClick={() => {
-      if (key === 'analysis') {
-        window.open(
-          `${import.meta.env.BASE_URL}product-analysis.html`,
-          '_blank',
-          'noopener,noreferrer'
-        );
-      } else {
-        openDoc(key);
-      }
-    }}
-  >
-    <FileText size={16} />
-    <span>{label}</span>
-    <ArrowUpRight size={14} />
-  </button>
-))}
-</div>
-          <div className="aside-card aside-note"><Sparkles size={18}/><h3>产品原则</h3><p>以真实用户问题为起点，用可运行的 MVP 验证方案，并如实呈现能力边界。</p></div>
-          <div className="aside-card"><h3>代码与 Demo</h3><p>部署前请在此处补充真实 GitHub 仓库、在线 Demo 或运行说明链接。</p><span className="placeholder-link"><Code2 size={15}/> GitHub 链接待补充</span></div>
-        </aside>
-      </div>
-      <div className="next-project"><div><span className="eyebrow">EXPLORE MORE</span><h2>继续浏览其他项目</h2></div><button className="button button-primary" onClick={() => go({type:'project',key:projectKey==='data'?'volunteer':'data'})}>查看另一个项目 <ArrowRight size={16}/></button></div>
+      {safeProjectKey === 'data' && (
+        <button className="button button-primary detail-hero-demo-button" onClick={() => openExternal(demoLink)}>
+          体验 Demo <ArrowRight size={16} />
+        </button>
+      )}
+      {safeProjectKey === 'volunteer' && (
+        <button className="button button-primary volunteer-hero-demo-button" onClick={() => openExternal(demoLink)}>
+          体验 Demo <ArrowRight size={16} />
+        </button>
+      )}
     </div>
-  </main>;
+    <div className="detail-layout"><article className="detail-main">
+      <section className="content-section"><div className="eyebrow">OVERVIEW</div><h2>项目概述</h2><p>{data.intro}</p></section>
+      <section className="content-section"><div className="eyebrow">USER PROBLEM</div><h2>核心问题</h2><div className="problem-list">{data.problem.map((p, i) => <div className="problem-row" key={p}><span>0{i + 1}</span><p>{p}</p></div>)}</div></section>
+      <section className="content-section"><div className="eyebrow">KEY FEATURES</div><h2>核心功能</h2><div className="feature-list">{data.features.map(([title, desc], i) => <div className="feature-row" key={title}><span className="feature-index">0{i + 1}</span><div><h3>{title}</h3><p>{desc}</p></div></div>)}</div></section>
+      <section className="content-section"><div className="eyebrow">LEARNINGS</div><h2>项目思考与边界</h2><p>{data.thinking}</p></section>
+    </article>
+    <aside className="detail-aside">
+      <div className="aside-card"><h3>项目材料</h3><p>正式文档可打开飞书，测试材料可下载</p>
+        {data.docs.map(([key, label]) => <button className="aside-doc" key={key} onClick={() => {
+          if (projectDocLinks[key]) {
+            openExternal(projectDocLinks[key]);
+            return;
+          }
+          if (key === 'testing') {
+            openDoc('testing', safeProjectKey);
+            return;
+          }
+          openDoc(key, safeProjectKey);
+        }}><FileText size={16} /><span>{label}</span><ArrowUpRight size={14} /></button>)}
+        {safeProjectKey === 'data' && <>
+          <a className="aside-doc" href={datasetLinks.data} download><Database size={16} /><span>下载模拟数据集</span><Download size={14} /></a>
+          <a className="aside-doc" href={datasetLinks.records} download><BarChart3 size={16} /><span>下载测试执行记录</span><Download size={14} /></a>
+        </>}
+      </div>
+      <div className="aside-card aside-note"><Sparkles size={18} /><h3>产品原则</h3><p>以真实用户问题为起点，用可运行的 MVP 验证方案，并如实呈现能力边界。</p></div>
+      <div className="aside-card"><h3>源代码</h3><p>项目代码与运行说明可在仓库中查看。</p>
+        <a className="placeholder-link" href={sourceLink} target="_blank" rel="noreferrer"><Code2 size={15} /> {safeProjectKey === 'data' ? 'AI 数据分析 Agent GitHub' : 'AI 志愿规划助手 GitHub'} <ExternalLink size={14} /></a>
+      </div>
+    </aside></div>
+    <div className="next-project"><div><span className="eyebrow">EXPLORE MORE</span><h2>继续浏览其他项目</h2></div><button className="button button-primary" onClick={() => go({ type: 'project', key: safeProjectKey === 'data' ? 'volunteer' : 'data' })}>查看另一个项目 <ArrowRight size={16} /></button></div>
+  </div></main>;
 }
 
-function DocumentPage({ doc, go }) {
+function DocumentPage({ doc, docKey, projectKey, go }) {
   if (!doc) return null;
-  return <main className="inner-page document-page">
-    <div className="section-wrap doc-reader-wrap">
-      <button className="back-link" onClick={() => go({type:'home'})}><ChevronLeft size={16}/> 返回作品集首页</button>
-      <div className="doc-reader">
-        <div className="doc-reader-head"><span className="doc-icon large"><FileText/></span><div><div className="eyebrow">{doc.eyebrow}</div><h1>{doc.title}</h1><p>{doc.subtitle}</p></div></div>
-        <div className="doc-reader-note"><CircleDot size={16}/><span>作品集展示版 · 关键内容摘要。后续可将飞书正式文档中的最终内容补充到这里。</span></div>
-        <div className="doc-toc"><b>本文目录</b>{doc.sections.map(([title],i)=><a key={title} href={`#section-${i}`}>{title}</a>)}</div>
-        <div className="doc-body">{doc.sections.map(([title,body],i)=><section id={`section-${i}`} className="doc-section" key={title}><h2>{title}</h2><p>{body}</p></section>)}</div>
-        <div className="doc-reader-footer"><div><b>需要查看完整材料？</b><p>可在此处添加飞书原文链接或 PDF 下载入口。</p></div><span className="placeholder-link"><ExternalLink size={15}/> 完整版链接待补充</span></div>
-      </div>
+  const external = (projectKey === 'volunteer' ? volunteerFeishuLinks : feishuLinks)[docKey];
+  return <main className="inner-page document-page"><div className="section-wrap doc-reader-wrap">
+    <button className="back-link" onClick={() => go({ type: 'home' })}><ChevronLeft size={16} /> 返回作品集首页</button>
+    <div className="doc-reader">
+      <div className="doc-reader-head"><span className="doc-icon large"><FileText /></span><div><div className="eyebrow">{doc.eyebrow}</div><h1>{doc.title}</h1><p>{doc.subtitle}</p></div></div>
+      <div className="doc-reader-note"><CheckCircle2 size={16} /><span>作品集展示版 · 关键内容摘要。正式文档请通过下方入口查看。</span></div>
+      <div className="doc-toc"><b>本文目录</b>{doc.sections.map(([title], i) => <a key={title} href={`#section-${i}`}>{title}</a>)}</div>
+      <div className="doc-body">{doc.sections.map(([title, body], i) => <section id={`section-${i}`} className="doc-section" key={title}><h2>{title}</h2><p>{body}</p></section>)}</div>
+      {docKey === 'testing' && <div className="download-panel"><h3>测试附件下载</h3><p>下载 Excel 文件查看详细用例、执行情况与结果汇总。</p><div className="download-actions"><a className="button button-primary" href={datasetLinks.data} download><Database size={16} /> 下载模拟数据集</a><a className="button button-quiet" href={datasetLinks.records} download><Download size={16} /> 下载测试执行记录</a></div></div>}
+      {external && <div className="doc-reader-footer"><div><b>查看完整文档</b><p>在飞书中阅读正式版本。</p></div><a className="button button-primary" href={external} target="_blank" rel="noreferrer">打开飞书文档 <ExternalLink size={15} /></a></div>}
     </div>
-  </main>;
+  </div></main>;
 }
 
 function About({ go }) {
   return <main className="inner-page"><div className="section-wrap about-page">
-    <button className="back-link" onClick={() => go({type:'home'})}><ChevronLeft size={16}/> 返回作品集首页</button>
-    <div className="eyebrow">ABOUT ME</div><h1>关注产品问题，<br/><span>也关注 AI 如何落地。</span></h1>
-    <p className="about-lead">我正在通过 AI 产品项目实践，积累从用户需求分析、产品方案设计到 Agent 工作流搭建与测试评估的经验。</p>
-    <div className="about-grid"><div className="about-card"><Target/><h3>产品思维</h3><p>关注目标用户、场景、核心价值与功能边界。</p></div><div className="about-card"><Database/><h3>数据意识</h3><p>关注数据质量、分析口径和结果是否可验证。</p></div><div className="about-card"><Code2/><h3>AI 实践</h3><p>使用 Dify、LangGraph 与大模型能力构建可运行的 MVP。</p></div></div>
-    <div className="profile-edit-note"><b>发布前请补充个人信息</b><p>姓名、学校 / 专业、求职方向、邮箱与简历链接目前均未填写，避免模板替你虚构个人经历。</p></div>
+    <button className="back-link" onClick={() => go({ type: 'home' })}><ChevronLeft size={16} /> 返回作品集首页</button>
+    <div className="eyebrow">ABOUT ME</div><h1>关注产品问题，<br /><span>也关注 AI 如何落地。</span></h1>
+    <p className="about-lead">我在做的是把 AI 能力从“概念”变成“可用方案”：先理解真实用户问题，再设计产品流程与 AI 工作流，最后用 MVP 和测试去验证结果是否真正有价值。我的关注点在 AI 产品、数据分析与业务决策支持。</p>
+    <div className="about-grid"><div className="about-card"><Target /><h3>产品思维</h3><p>关注目标用户、场景、核心价值与功能边界，确保方案始终服务真实业务问题。</p></div><div className="about-card"><Database /><h3>数据意识</h3><p>关注数据质量、分析口径和结果是否可验证，推动 AI 结果更接近业务事实。</p></div><div className="about-card"><Code2 /><h3>AI 实践</h3><p>用 Dify、LangGraph 与大模型能力构建可运行的 MVP，并持续识别边界与提升方向。</p></div></div>
+    <div className="profile-edit-note"><b>资料补全区</b><p>姓名、学校 / 专业、求职方向、邮箱和简历链接可在这里替换成真实内容，避免模板信息影响求职可信度。</p></div>
   </div></main>;
 }
 
 createRoot(document.getElementById('root')).render(<App />);
-
