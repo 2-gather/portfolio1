@@ -13,7 +13,7 @@ const profile = {
   email: 't2gather@outlook.com',
   resume: '#',
   analysis: 'https://github.com/2-gather/ai-data-analysis-agent',
-  city: 'Your City',
+  city: '江苏',
   focus: 'AI 产品 · 业务分析 · Agent 工作流 · 数据应用',
 };
 
@@ -347,12 +347,85 @@ function DocumentPage({ doc, docKey, projectKey, go }) {
 }
 
 function About({ go }) {
-  return <main className="inner-page"><div className="section-wrap about-page">
+  return <main className="inner-page"><div className="section-wrap resume-page">
     <button className="back-link" onClick={() => go({ type: 'home' })}><ChevronLeft size={16} /> 返回作品集首页</button>
-    <div className="eyebrow">ABOUT ME</div><h1>关注产品问题，<br /><span>也关注 AI 如何落地。</span></h1>
-    <p className="about-lead">我在做的是把 AI 能力从“概念”变成“可用方案”：先理解真实用户问题，再设计产品流程与 AI 工作流，最后用 MVP 和测试去验证结果是否真正有价值。我的关注点在 AI 产品、数据分析与业务决策支持。</p>
-    <div className="about-grid"><div className="about-card"><Target /><h3>产品思维</h3><p>关注目标用户、场景、核心价值与功能边界，确保方案始终服务真实业务问题。</p></div><div className="about-card"><Database /><h3>数据意识</h3><p>关注数据质量、分析口径和结果是否可验证，推动 AI 结果更接近业务事实。</p></div><div className="about-card"><Code2 /><h3>AI 实践</h3><p>用 Dify、LangGraph 与大模型能力构建可运行的 MVP，并持续识别边界与提升方向。</p></div></div>
-    <div className="profile-edit-note"><b>资料补全区</b><p>姓名、学校 / 专业、求职方向、邮箱和简历链接可在这里替换成真实内容，避免模板信息影响求职可信度。</p></div>
+
+    <section className="resume-hero">
+      <div className="eyebrow">AI PRODUCT MANAGER INTERN</div>
+      <h1>朱海洋</h1>
+      <p className="resume-intent">求职意向：AI 产品经理实习生</p>
+      <div className="resume-contact">
+        <span>电话：18761526279</span>
+        <span>邮箱：{profile.email}</span>
+        <span>城市：{profile.city}</span>
+      </div>
+      <a className="button button-primary resume-github" href="https://github.com/2-gather" target="_blank" rel="noreferrer">
+        GitHub 作品集 <ArrowUpRight size={16} />
+      </a>
+    </section>
+
+    <div className="resume-layout">
+      <section className="resume-card">
+        <div className="eyebrow">EDUCATION</div>
+        <h2>教育背景</h2>
+        <div className="resume-edu-head">
+          <h3>中国矿业大学（211）</h3>
+          <span>预计 2028 年 6 月毕业</span>
+        </div>
+        <div className="resume-edu-grid">
+          <div><b>学历</b><p>本科</p></div>
+          <div><b>专业</b><p>大数据管理与应用</p></div>
+        </div>
+      </section>
+
+      <section className="resume-card resume-projects">
+        <div className="eyebrow">PROJECT EXPERIENCE</div>
+        <h2>项目经历</h2>
+
+        <article className="project-exp-card">
+          <div className="project-exp-head">
+            <h3>AI 数据分析 Agent｜个人项目</h3>
+            <span className="exp-tag">MVP</span>
+          </div>
+          <p className="exp-stack"><b>技术栈：</b>Python、LangGraph、LangChain、LLM、Pandas、Streamlit、Plotly</p>
+          <div className="exp-block"><h4>方案设计</h4><p>面向非专业数据用户，设计基于大语言模型与 Agent 工作流的自然语言数据分析方案，将用户问题转化为分析任务，通过工具调用完成数据处理与分析，降低数据分析使用门槛。</p></div>
+          <div className="exp-block"><h4>技术实现</h4><p>基于 LangGraph 编排 Agent 工作流，结合 LangChain 与 LLM 实现问题理解、分析规划和工具调用；基于 Pandas 封装统计、分组聚合、类别排名与趋势分析工具，并通过 Streamlit、Plotly 实现交互与可视化。</p></div>
+          <div className="exp-block"><h4>落地成果</h4><p>完成可运行本地 MVP、配套产品文档及测试集，实现数据上传、自然语言提问、工具执行、结果汇总与图表展示流程；通过实际数据测试识别任务匹配和复杂问题处理的优化空间。</p></div>
+        </article>
+
+        <article className="project-exp-card">
+          <div className="project-exp-head">
+            <h3>AI 志愿规划助手｜个人项目</h3>
+            <span className="exp-tag">WORKFLOW</span>
+          </div>
+          <p className="exp-stack"><b>技术栈：</b>Dify Workflow、知识库检索、HTML、CSS、JavaScript、Node.js、Express</p>
+          <div className="exp-block"><h4>方案设计</h4><p>面向高考志愿规划场景，设计基于 AI 工作流与知识库检索的院校推荐方案，将分数、选科、意向城市和目标专业等条件融入推荐流程，支持冲刺、稳妥、保底分层建议。</p></div>
+          <div className="exp-block"><h4>技术实现</h4><p>基于 Dify Workflow 编排条件处理、知识库检索与推荐结果生成流程，并通过提示词约束推荐逻辑；使用 HTML/CSS/JavaScript 构建交互页面，以 Node.js、Express 设计后端接口。</p></div>
+          <div className="exp-block"><h4>落地成果</h4><p>完成产品原型、Dify 工作流配置、知识库数据整理及配套产品文档，并围绕不同场景进行验证，探索 AI 工作流在结构化推荐场景中的应用。</p></div>
+        </article>
+      </section>
+
+      <section className="resume-card">
+        <div className="eyebrow">SKILLS</div>
+        <h2>专业技能</h2>
+        <div className="skills-groups">
+          <div className="skills-item"><b>AI 应用与框架：</b><p>LangGraph、LangChain、LLM 应用、Dify Workflow、知识库检索</p></div>
+          <div className="skills-item"><b>数据分析：</b><p>SQL、Python、Pandas、Power BI、数据清洗与基础分析</p></div>
+          <div className="skills-item"><b>开发技术：</b><p>HTML、CSS、JavaScript、React、Node.js、Express</p></div>
+          <div className="skills-item"><b>产品与原型工具：</b><p>Axure、XMind；具备需求分析、竞品分析、PRD 编写、MVP 规划与测试验证实践</p></div>
+        </div>
+      </section>
+
+      <section className="resume-card">
+        <div className="eyebrow">LANGUAGE & HONORS</div>
+        <h2>语言与荣誉</h2>
+        <ul className="resume-list">
+          <li>大学英语四级（CET-4）：575 分</li>
+          <li>大学英语六级（CET-6）：602 分</li>
+          <li>中国矿业大学三等奖学金</li>
+        </ul>
+      </section>
+    </div>
   </div></main>;
 }
 
