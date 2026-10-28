@@ -11,7 +11,7 @@ const profile = {
   name: '朱海洋',
   role: 'AI PRODUCT MANAGER',
   email: 't2gather@outlook.com',
-  resume: '#',
+  resume: `${import.meta.env.BASE_URL}resume.pdf`,
   analysis: 'https://github.com/2-gather/ai-data-analysis-agent',
   city: '江苏',
   focus: 'AI 产品 · 业务分析 · Agent 工作流 · 数据应用',
@@ -108,6 +108,10 @@ function openExternal(url) {
   window.open(url, '_blank', 'noopener,noreferrer');
 }
 
+function openResume() {
+  window.open(profile.resume, '_blank', 'noopener,noreferrer');
+}
+
 function App() {
   const [page, setPage] = useState({ type: 'home' });
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -130,13 +134,13 @@ function App() {
       <nav className={mobileOpen ? 'nav nav-open' : 'nav'}>
         <button className={isHome ? 'nav-link active' : 'nav-link'} onClick={() => go({ type: 'home' })}>首页</button>
         <button className="nav-link" onClick={() => openProject('data')}>项目案例</button>
-        <button className="nav-link" onClick={() => go({ type: 'about' })}>关于我</button>
+        <button className="nav-link" onClick={openResume}>关于我</button>
         <a className="nav-cta" href={`mailto:${profile.email}`}>联系我 <ArrowUpRight size={15} /></a>
       </nav>
       <button className="mobile-menu" onClick={() => setMobileOpen(!mobileOpen)} aria-label="打开菜单">{mobileOpen ? <X size={20} /> : <Menu size={20} />}</button>
     </header>
 
-    {page.type === 'home' && <Home openProject={openProject} openDoc={openDoc} go={go} />}
+    {page.type === 'home' && <Home openProject={openProject} openDoc={openDoc} go={go} openResume={openResume} />}
     {page.type === 'project' && <ProjectDetail projectKey={page.key} openDoc={openDoc} go={go} />}
     {page.type === 'doc' && <DocumentPage doc={activeDoc} docKey={page.key} projectKey={page.project || 'data'} go={go} />}
     {page.type === 'about' && <About go={go} />}
@@ -148,7 +152,7 @@ function App() {
   </div>;
 }
 
-function Home({ openProject, openDoc, go }) {
+function Home({ openProject, openDoc, go, openResume }) {
   const thinkingSteps = [
     { num: '01', title: '理解问题', text: '识别真实用户痛点、使用场景和关键限制，确保方案服务于业务问题。', icon: <Target size={18} /> },
     { num: '02', title: '设计方案', text: '梳理用户流程、功能边界和 AI 工作流，清晰界定模型、工具和职责。', icon: <Layers3 size={18} /> },
@@ -214,7 +218,7 @@ function Home({ openProject, openDoc, go }) {
 
         <div className="hero-side-actions" aria-label="快捷入口">
           <button className="button button-primary" onClick={() => openProject('data')}>查看项目案例 <ArrowRight size={17} /></button>
-          <button className="button button-quiet" onClick={() => go({ type: 'about' })}>了解我 <ArrowUpRight size={16} /></button>
+          <button className="button button-quiet" onClick={openResume}>了解我 <ArrowUpRight size={16} /></button>
         </div>
       </div>
     </section>
